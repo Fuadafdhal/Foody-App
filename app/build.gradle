@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.0"
 
     defaultConfig {
-        applicationId "com.example.foody"
+        applicationId "com.afdhal_studio.foody"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
