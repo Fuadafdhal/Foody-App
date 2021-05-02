@@ -63,8 +63,8 @@
 
         <TextView
             android:id="@+id/error_textView"
-            readApiResponse2="@{mainViewModel.recipesResponse}"
-            readDatabase2="@{mainViewModel.readRecipes}"
+            readApiResponse="@{mainViewModel.recipesResponse}"
+            readDatabase="@{mainViewModel.readRecipes}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
