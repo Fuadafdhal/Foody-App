@@ -1,17 +1,18 @@
 package com.afdhal_studio.foody.ui.fragments.recipes
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.afdhal_studio.foody.viewmodels.MainViewModel
 import com.afdhal_studio.foody.R
 import com.afdhal_studio.foody.adapters.RecipesAdapter
 import com.afdhal_studio.foody.util.NetworkResult
+import com.afdhal_studio.foody.viewmodels.MainViewModel
 import com.afdhal_studio.foody.viewmodels.RecipesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_recipes.view.*
@@ -38,15 +39,28 @@ class RecipesFragment : Fragment() {
         mView = inflater.inflate(R.layout.fragment_recipes, container, false)
 
         setupRecyclerView()
-        requestApiData()
+        readDatabase()
 
         return mView
     }
 
+    private fun readDatabase() {
+        mainViewModel.readRecipe.observe(viewLifecycleOwner) { database ->
+            if (database.isNotEmpty()) {
+                Log.d("RecipesFragment", "readDatabase called!")
+                mAdapter.setData(database[0].foodRecipe)
+                hideShimmerEffect()
+            } else {
+                requestApiData()
+            }
+        }
+    }
+
     private fun requestApiData() {
+        Log.d("RecipesFragment", "requestApiData called!")
         mainViewModel.getRecipes(recipesViewModel.applyQueries())
         mainViewModel.recipesResponse.observe(viewLifecycleOwner, { response ->
-            when(response){
+            when (response) {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
                     response.data?.let { mAdapter.setData(it) }
@@ -59,7 +73,7 @@ class RecipesFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                is NetworkResult.Loading ->{
+                is NetworkResult.Loading -> {
                     showShimmerEffect()
                 }
             }

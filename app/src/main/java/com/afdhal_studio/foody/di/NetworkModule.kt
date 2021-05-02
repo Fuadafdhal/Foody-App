@@ -1,7 +1,7 @@
 package com.afdhal_studio.foody.di
 
-import com.afdhal_studio.foody.util.Constants.Companion.BASE_URL
 import com.afdhal_studio.foody.data.network.FoodRecipesApi
+import com.afdhal_studio.foody.util.Constants.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +18,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideHttpClient() : OkHttpClient {
+    fun provideHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .readTimeout(15, TimeUnit.SECONDS)
             .connectTimeout(15, TimeUnit.SECONDS)
