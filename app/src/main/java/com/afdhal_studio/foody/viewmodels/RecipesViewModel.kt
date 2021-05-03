@@ -1,8 +1,10 @@
 package com.afdhal_studio.foody.viewmodels
 
 import android.app.Application
+import android.widget.Toast
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.afdhal_studio.foody.data.DataStoreRepository
 import com.afdhal_studio.foody.util.Constants.Companion.API_KEY
@@ -14,20 +16,26 @@ import com.afdhal_studio.foody.util.Constants.Companion.QUERY_API_KEY
 import com.afdhal_studio.foody.util.Constants.Companion.QUERY_DIET
 import com.afdhal_studio.foody.util.Constants.Companion.QUERY_FILL_INGREDIENTS
 import com.afdhal_studio.foody.util.Constants.Companion.QUERY_NUMBER
+import com.afdhal_studio.foody.util.Constants.Companion.QUERY_SEARCH
 import com.afdhal_studio.foody.util.Constants.Companion.QUERY_TYPE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class RecipesViewModel @ViewModelInject constructor(
-    private var dataStore: DataStoreRepository,
-    application: Application
+    application: Application,
+    private var dataStore: DataStoreRepository
 ) : AndroidViewModel(application) {
 
     private var mealType = DEFAULT_MEAL_TYPE
     private var dietType = DEFAULT_DIET_TYPE
 
+    var networkStatus = false
+    var backOnline = false
+
+
     val readMealAndDietType = dataStore.readMealAndDietType
+    val readBackOnline = dataStore.readBackOnline.asLiveData()
 
     fun saveMealAndDietType(
         mealType: String,
@@ -35,8 +43,14 @@ class RecipesViewModel @ViewModelInject constructor(
         dietType: String,
         dietTypeId: Int
     ) = viewModelScope.launch(Dispatchers.IO) {
-
         dataStore.saveMealAndDietType(mealType, mealTypeId, dietType, dietTypeId)
+    }
+
+    fun saveBackOnline(backOnline: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStore.saveBackOnline(backOnline)
+
+        }
     }
 
 
@@ -59,5 +73,31 @@ class RecipesViewModel @ViewModelInject constructor(
 
         return queries
     }
+
+    fun applySearchQuery(searchQuery: String): HashMap<String, String> {
+        val queries: HashMap<String, String> = HashMap()
+
+        queries[QUERY_SEARCH] = searchQuery
+        queries[QUERY_NUMBER] = DEFAULT_RECIPES_NUMBER
+        queries[QUERY_API_KEY] = API_KEY
+        queries[QUERY_ADD_RECIPE_INFORMATION] = "true"
+        queries[QUERY_FILL_INGREDIENTS] = "true"
+
+        return queries
+    }
+
+    fun showNetworkStatus() {
+        if (!networkStatus) {
+            Toast.makeText(getApplication(), "No Internet Connection.", Toast.LENGTH_SHORT).show()
+            saveBackOnline(true)
+        } else if (networkStatus) {
+            if (backOnline) {
+                Toast.makeText(getApplication(), "We're back online.", Toast.LENGTH_SHORT).show()
+                saveBackOnline(false)
+            }
+        }
+
+    }
+
 
 }
