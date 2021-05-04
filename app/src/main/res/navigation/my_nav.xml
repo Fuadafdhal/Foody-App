@@ -17,6 +17,9 @@
             android:name="backFromBottomSheet"
             android:defaultValue="false"
             app:argType="boolean" />
+        <action
+            android:id="@+id/action_recipesFragment_to_detailActivity"
+            app:destination="@id/detailActivity" />
     </fragment>
 
     <fragment
@@ -40,4 +43,14 @@
             android:id="@+id/action_recipesBottomSheet_to_recipesFragment"
             app:destination="@id/recipesFragment" />
     </dialog>
+
+    <activity
+        android:id="@+id/detailActivity"
+        android:name="com.afdhal_studio.foody.ui.DetailsActivity"
+        android:label="Details"
+        tools:layout="@layout/activity_details">
+        <argument
+            android:name="result"
+            app:argType="com.afdhal_studio.foody.models.Result" />
+    </activity>
 </navigation>
