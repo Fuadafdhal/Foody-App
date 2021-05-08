@@ -1,22 +1,36 @@
 package com.afdhal_studio.foody.ui
 
-import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.navArgs
 import com.afdhal_studio.foody.R
 import com.afdhal_studio.foody.adapters.PagerAdapter
+import com.afdhal_studio.foody.data.database.entities.FavoritesEntity
+import com.afdhal_studio.foody.models.Result
 import com.afdhal_studio.foody.ui.fragments.ingredients.IngredientsFragment
 import com.afdhal_studio.foody.ui.fragments.instructions.InstructionsFragment
 import com.afdhal_studio.foody.ui.fragments.overview.OverviewFragment
 import com.afdhal_studio.foody.util.Constants.Companion.RECIPE_RESULT_KEY
+import com.afdhal_studio.foody.viewmodels.MainViewModel
+import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_details.*
+import java.lang.Exception
 
+@AndroidEntryPoint
 class DetailsActivity : AppCompatActivity() {
 
-    private val args by navArgs<DetailsActivityArgs>()
+    private val args: DetailsActivityArgs by navArgs()
+    private val mainViewModel: MainViewModel by viewModels()
+
+    private var recipeSaved = false
+    private var savedRecipeId = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,17 +60,81 @@ class DetailsActivity : AppCompatActivity() {
             titles,
             supportFragmentManager
         )
-
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.details_menu, menu)
+        val menuItem = menu?.findItem(R.id.save_to_favorites_menu)
+        checkSavedRecipes(menuItem!!)
+        return true
+    }
+
+    private fun checkSavedRecipes(menuItem: MenuItem) {
+        mainViewModel.readFavoriteRecipes.observe(this) { favoritesEntity ->
+            try {
+                favoritesEntity.forEach {
+                    if (validateId(it.result, args.result)) {
+                        changeMenuItemColor(menuItem, R.color.yellow)
+                        savedRecipeId = it.id
+                        recipeSaved = true
+                    } else {
+                        if (!recipeSaved) changeMenuItemColor(menuItem, R.color.white)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d("DetailsActivity", e.message.toString())
+            }
+        }
+    }
+
+    private fun validateId(localResult: Result, result: Result): Boolean {
+        return localResult.recipeId == result.recipeId
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (item.itemId == android.R.id.home) {
             finish()
+        } else if (item.itemId == R.id.save_to_favorites_menu && !recipeSaved) {
+            saveToFavorites(item)
+        } else if (item.itemId == R.id.save_to_favorites_menu && recipeSaved) {
+            removeFromFavorites(item)
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun saveToFavorites(item: MenuItem) {
+        val favoriteEntity =
+            FavoritesEntity(
+                0,
+                args.result
+            )
+        showSnackBar("Recipe saved.")
+        mainViewModel.insertFavoriteRecipes(favoriteEntity)
+        changeMenuItemColor(item, R.color.yellow)
+    }
+
+    private fun removeFromFavorites(item: MenuItem) {
+        val favoritesEntity =
+            FavoritesEntity(
+                savedRecipeId,
+                args.result
+            )
+        mainViewModel.deleteFavoriteRecipe(favoritesEntity)
+        changeMenuItemColor(item, R.color.white)
+        showSnackBar("Removed from Favorites.")
+        recipeSaved = false
+    }
+
+
+    private fun showSnackBar(message: String) {
+        Snackbar.make(detailsLayout, message, Snackbar.LENGTH_SHORT).setAction("Okay") {}.show()
+    }
+
+    private fun changeMenuItemColor(item: MenuItem, color: Int) {
+        item.icon.setTint(ContextCompat.getColor(this, color))
     }
 }
