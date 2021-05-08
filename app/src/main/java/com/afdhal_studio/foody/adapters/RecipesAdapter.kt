@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afdhal_studio.foody.databinding.RecipesRowLayoutBinding
 import com.afdhal_studio.foody.models.FoodRecipe
 import com.afdhal_studio.foody.models.Result
-import com.afdhal_studio.foody.util.RecipesDiffUtil
+import com.afdhal_studio.foody.util.DiffUtils
 
 class RecipesAdapter : RecyclerView.Adapter<RecipesAdapter.MyViewHolder>() {
 
@@ -46,7 +46,7 @@ class RecipesAdapter : RecyclerView.Adapter<RecipesAdapter.MyViewHolder>() {
 
     fun setData(newData: FoodRecipe){
         val recipesDiffUtil =
-            RecipesDiffUtil(recipes, newData.results)
+            DiffUtils(recipes, newData.results)
         val diffUtilResult = DiffUtil.calculateDiff(recipesDiffUtil)
         recipes = newData.results
         diffUtilResult.dispatchUpdatesTo(this)
