@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/ic_food_joke_background"
+        android:background="@drawable/ic_food_joke_background_dark"
         tools:context=".ui.fragments.foodjoke.FoodJokeFragment">
 
         <com.google.android.material.card.MaterialCardView
@@ -30,7 +30,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/lightMediumGray"
+            app:strokeColor="@color/strokeColor"
             app:strokeWidth="1dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,7 +47,7 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/courgette"
                     android:text="@string/lorem_ipsum"
-                    android:textColor="@color/dark"
+                    android:textColor="@color/titleColor"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

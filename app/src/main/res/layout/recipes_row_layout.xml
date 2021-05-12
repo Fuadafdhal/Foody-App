@@ -27,13 +27,13 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:strokeColor="@color/lightMediumGray"
+            app:strokeColor="@color/strokeColor"
             app:strokeWidth="1dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white">
+                android:background="@color/cardBackgroundColor">
 
                 <ImageView
                     android:id="@+id/recipe_imageView"
@@ -58,7 +58,8 @@
                     android:fontFamily="@font/courgette"
                     android:maxLines="2"
                     android:text="@{result.title}"
-                    android:textColor="@color/darker"
+                    tools:text="@string/app_name"
+                    android:textColor="@color/titleColor"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -68,13 +69,14 @@
 
                 <TextView
                     android:id="@+id/description_textView"
+                    parseHtml="@{result.summary}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    tools:text="@string/app_name"
                     android:layout_marginTop="12dp"
                     android:ellipsize="end"
                     android:maxLines="3"
-                    parseHtml="@{result.summary}"
-                    android:textColor="@color/darkGray"
+                    android:textColor="@color/descriptionColor"
                     app:layout_constraintEnd_toEndOf="@+id/title_textView"
                     app:layout_constraintStart_toStartOf="@+id/title_textView"
                     app:layout_constraintTop_toBottomOf="@+id/title_textView" />

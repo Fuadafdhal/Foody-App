@@ -29,6 +29,7 @@
             <View
                 android:id="@+id/white_background"
                 android:layout_width="120dp"
+                android:background="@color/white"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
