@@ -1,24 +1,26 @@
 package com.afdhal_studio.foody.ui.fragments.instructions
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebViewClient
-import com.afdhal_studio.foody.R
+import androidx.fragment.app.Fragment
+import com.afdhal_studio.foody.databinding.FragmentInstructionsBinding
 import com.afdhal_studio.foody.models.Result
 import com.afdhal_studio.foody.util.Constants
-import kotlinx.android.synthetic.main.fragment_instructions.view.*
 
 
 class InstructionsFragment : Fragment() {
+    private var _binding: FragmentInstructionsBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_instructions, container, false)
+    ): View {
+        _binding = FragmentInstructionsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,10 +29,14 @@ class InstructionsFragment : Fragment() {
         val args = arguments
         val mBundle: Result? = args?.getParcelable(Constants.RECIPE_RESULT_KEY)
 
-        view.instructions_webView.webViewClient = object : WebViewClient() {}
+        binding.instructionsWebView.webViewClient = object : WebViewClient() {}
 
         val websiteUrl: String = mBundle!!.sourceUrl
-        view.instructions_webView.loadUrl(websiteUrl)
+        binding.instructionsWebView.loadUrl(websiteUrl)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

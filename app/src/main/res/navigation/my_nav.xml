@@ -26,7 +26,7 @@
         android:id="@+id/favoriteRecipesFragment"
         android:name="com.afdhal_studio.foody.ui.fragments.favorites.FavoriteRecipesFragment"
         android:label="Favorites"
-        tools:layout="@layout/fragment_favorite_recipes" >
+        tools:layout="@layout/fragment_favorite_recipes">
         <action
             android:id="@+id/action_favoriteRecipesFragment_to_detailActivity"
             app:destination="@id/detailActivity" />
@@ -45,7 +45,9 @@
         tools:layout="@layout/recipes_bottom_sheet">
         <action
             android:id="@+id/action_recipesBottomSheet_to_recipesFragment"
-            app:destination="@id/recipesFragment" />
+            app:destination="@id/recipesFragment"
+            app:popUpTo="@id/recipesFragment"
+            app:popUpToInclusive="true" />
     </dialog>
 
     <activity

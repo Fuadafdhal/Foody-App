@@ -13,7 +13,6 @@ import com.afdhal_studio.foody.ui.fragments.favorites.FavoriteRecipesFragmentDir
 import com.afdhal_studio.foody.util.DiffUtils
 import com.afdhal_studio.foody.viewmodels.MainViewModel
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.favorite_recipes_row_layout.view.*
 
 class FavoriteRecipesAdapter(
     private val requireActivity: FragmentActivity,
@@ -30,7 +29,7 @@ class FavoriteRecipesAdapter(
     private var selectedRecipes = arrayListOf<FavoritesEntity>()
 
 
-    class VHolder(private val binding: FavoriteRecipesRowLayoutBinding) :
+    class VHolder(val binding: FavoriteRecipesRowLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(favoritesEntity: FavoritesEntity) {
@@ -61,7 +60,7 @@ class FavoriteRecipesAdapter(
         /**
          * Single Click Listener
          * */
-        holder.itemView.favoriteRecipesRowLayout.setOnClickListener {
+        holder.binding.favoriteRecipesRowLayout.setOnClickListener {
             if (multiSelection) {
                 applySelection(holder, currentRecipe)
             } else {
@@ -76,15 +75,15 @@ class FavoriteRecipesAdapter(
         /**
          * Long Click Listener
          * */
-        holder.itemView.favoriteRecipesRowLayout.setOnLongClickListener {
+        holder.binding.favoriteRecipesRowLayout.setOnLongClickListener {
             if (!multiSelection) {
                 multiSelection = true
                 requireActivity.startActionMode(this)
                 applySelection(holder, currentRecipe)
                 true
             } else {
-                multiSelection = false
-                false
+                applySelection(holder, currentRecipe)
+                true
             }
         }
     }
@@ -102,17 +101,20 @@ class FavoriteRecipesAdapter(
     }
 
     private fun changeRecipeStyle(holder: VHolder, backgroundColor: Int, strokeColor: Int) {
-        holder.itemView.favoriteRecipesRowLayout.setBackgroundColor(
+        holder.binding.favoriteRecipesRowLayout.setBackgroundColor(
             ContextCompat.getColor(requireActivity, backgroundColor)
         )
-        holder.itemView.favorite_row_cardView.strokeColor =
+        holder.binding.favoriteRowCardView.strokeColor =
             ContextCompat.getColor(requireActivity, strokeColor)
     }
 
 
     private fun applyActionModeTitle() {
         when (selectedRecipes.size) {
-            0 -> mActionMode.finish()
+            0 -> {
+                mActionMode.finish()
+                multiSelection = false
+            }
 
             1 -> mActionMode.title = "${selectedRecipes.size} item selected"
 
